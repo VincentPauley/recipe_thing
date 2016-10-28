@@ -1,0 +1,19 @@
+{
+  "name": "recipe_thing",
+  "version": "1.0.0",
+  "description": "\"# recipe_thin\"",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VincentPauley/recipe_thing.git"
+  },
+  "author": "Vincent Pauley",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/VincentPauley/recipe_thing/issues"
+  },
+  "homepage": "https://github.com/VincentPauley/recipe_thing#readme"
+}
