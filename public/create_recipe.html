@@ -3,11 +3,57 @@
   <head>
     <meta charset="utf-8"/>
     <title>Create Recipe</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   </head>
   <body>
     <h1>Create Recipe</h1>
-    <form name="create-recipe" action="submit-recipe">
-      <input type="text" />
+    <form id="recipe-form" name="create-recipe" action="submit-recipe">
+      <label for="recipe-name">Recipe Name:</label>
+      <input type="text" id="recipe-name" name="recipe-name"/>
+      <br />
+      <div id="ingredients-display">
+        <h4>Ingredients</h4>
+      </div>
+      <label for="ingredient">Add Ingredient</label>
+      <input type="text" id="ingredient" name="ingredient"/><input type="button" value="Add" id="add-ingredient"/>
+      <br />
+      <label for="prep-instructions">Preparation Instructions:</label><br />
+      <textarea id="prep-instructions" name="preparation"></textarea>
+      <br />
+      <input type="submit" value="Submit Recipe!"/>
     </form>
+    <script>
+      let ingredients = [];
+      $('#add-ingredient').on('click', function() {
+          ingredients.push($('input[name=ingredient]').val());
+          $('#ingredients-display').append($('input[name=ingredient]').val() + ', ');
+      });
+      $('#recipe-form').on('submit', function(e) {
+          e.preventDefault();
+          /* Form Vals */
+          console.log(`
+            recipe name: ` + $('input[name=recipe-name]').val() + `
+            ingredients: ` + ingredients + `
+            preparation: ` + $('#prep-instructions').val() + `
+          `);
+          $.ajax({
+              url : 'http://localhost:3000/create_recipe',
+              type: 'GET',
+              datatype: 'json',
+              data: {
+                  recipe_name : $('input[name=recipe-name]').val(),
+                  ingredients_list : ingredients.join('|'),
+                  preparation : $('#prep-instructions').val()
+              },
+              success: function(data) {
+                  console.log(data);
+              },
+              error: function(req, res, err) {
+                  console.log('ERROR');
+                  console.log(err);
+              }
+          })
+      });
+    </script>
   </body>
 </html>
