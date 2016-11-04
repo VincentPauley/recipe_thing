@@ -12,7 +12,7 @@ Function: mongo_insert_one()
 Parameters: insertionDetails (Object)
               - url 'string'
               - collection 'string',
-              - document 'object'
+              - doc 'object'
 
 Given the connection details, this function will insert a document into th re
 
@@ -26,7 +26,7 @@ function mongo_insert_one(insertionDetails) {
             return "Error, could not connect: " + err;
         } else {
             var collection = db.collection(insertionDetails.collection);
-            collection.insert(insertionDetails.document, function(err, result) {
+            collection.insert(insertionDetails.doc, function(err, result) {
                 if(err) {
                     return "Error, unable to insert document: " + err
                 } else {
@@ -49,29 +49,29 @@ function mongo_read_collection(queryDetails) {
   var url = queryDetails.url;
   // Use connect method to connect to the Server
   MongoClient.connect(url, function(err, db) {
-    if(err) {
-      console.log('there was an error: ' + err);
-    } else {
-      console.log('Connection established to: ' + url);
-      var collection = db.collection(queryDetails.collection);
-
-      collection.find().toArray(function(err, result) {
         if(err) {
-          console.log(err);e
-        } else if(result.length) {
-          console.log('Found: ', result);
+            console.log('there was an error: ' + err);
         } else {
-          console.log('nothing found');
+            console.log('Connection established to: ' + url);
+            var collection = db.collection(queryDetails.collection);
+
+            collection.find().toArray(function(err, result) {
+                if(err) {
+                    console.log(err);e
+                } else if(result.length) {
+                    console.log('Found: ', result);
+                } else {
+                    console.log('nothing found');
+                }
+            });
         }
-      });
-    }
-  });
+    });
 }
-// sample call
+/* sample call of READ
 mongo_read_collection({
   url : 'mongodb://localhost:27017/recipes',
   collection : 'recipes'
-});
+});*/
 // allow access to public directory
 app.use('/', express.static(__dirname + '/public'));
 app.use('/', express.static(__dirname + '/js'));
@@ -81,6 +81,16 @@ app.get('/create_recipe', function(req, res) {
   var recipe_name = req.param('recipe_name'),
       ingredients = req.param('ingredients_list'),
       instructions = req.param('preparation');
+  mongo_insert_one({
+      url: 'mongodb://localhost:27017/recipes',
+      collection: 'recipes',
+      doc: {
+        name : recipe_name,
+        ingredients : ingredients.split('|'),
+        prep : instructions
+      }
+  });
+
   console.log(`
       name: ` + recipe_name + `
       ingredients: ` + ingredients + `
