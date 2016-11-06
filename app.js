@@ -75,6 +75,7 @@ mongo_read_collection({
 // allow access to public directory
 app.use('/', express.static(__dirname + '/public'));
 app.use('/', express.static(__dirname + '/js'));
+app.use('/css', express.static(__dirname + '/css'));
 
 
 app.get('/create_recipe', function(req, res) {
@@ -90,12 +91,6 @@ app.get('/create_recipe', function(req, res) {
         prep : instructions
       }
   });
-
-  console.log(`
-      name: ` + recipe_name + `
-      ingredients: ` + ingredients + `
-      instructions: ` + instructions + `
-  `);
   res.send('success');
 });
 

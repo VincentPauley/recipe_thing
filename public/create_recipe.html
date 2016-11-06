@@ -3,39 +3,173 @@
   <head>
     <meta charset="utf-8"/>
     <title>Create Recipe</title>
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/create_recipe_styles.css"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <style>
+      #ingredients-display {
+        background-color: #666666;
+        padding: 10px;
+      }
+      #ingredients-display span {
+        /* background-color: #87CEFA;  #5CACEE */
+        background: linear-gradient(#87CEFA, #5CACEE);
+        padding: 4px 8px;
+        border-radius: 3px;
+        margin: 2px 4px;
+      }
+      #ingredients-display input {
+        height: 20px;
+        width: 20px;
+        border-radius: 10px;
+        border: none;
+        position: relative;
+        top: 1px;
+        left: 2px;
+      }
+      #meal-type-selection {
+        display: inline-block;
+        clear: both;
+      }
+      #meal-type-selection label {
+        border-right: 1px solid #A8A8A8;
+        border-bottom: 1px solid #A8A8A8;
+        border-top: 1px solid #A8A8A8;
+        padding: 4px 10px;
+        float: left;
+        background-color: #DCDCDC;
+      }
+      #meal-type-selection label:first-child {
+        border-left: 1px solid #A8A8A8;
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+      }
+      #meal-type-selection label:last-child {
+        background-color: orange;
+        border-radius: 20px;
+      }
+      #meal-type-selection input[type=radio] {
+          display: none;
+      }
+      .selected {
+        background-color: blue;
+        color: black;
+      }
+    </style>
   </head>
   <body>
-    <h1>Create Recipe</h1>
-    <form id="recipe-form" name="create-recipe" action="submit-recipe">
-      <label for="recipe-name">Recipe Name:</label>
-      <input type="text" id="recipe-name" name="recipe-name"/>
-      <br />
-      <div id="ingredients-display">
-        <h4>Ingredients</h4>
+    <div class="container">
+      <div class="row">
+        <h1>Create Recipe</h1>
+        <form id="recipe-form" name="create-recipe" class="form-inline" action="submit-recipe">
+          <label for="recipe-name">Recipe Name:</label>
+          <input type="text" id="recipe-name" class="form-control" name="recipe-name" placeholder="Ex: Grilled Cheese"/>
+          <br />
+
+          <!--
+          <label for="ingredient">Add Ingredient</label>
+          <div class="input-group"><input type="button" value="Add" id="add-ingredient"/>
+          </div> -->
+
+
+            <div class="form-group">
+              <label class="sr-only" for="ingredient">Ingredient</label>
+              <div class="input-group">
+                <div class="input-group-addon">Add Ingredient:</div>
+                <input type="text" class="form-control" id="ingredient" name="ingredient" placeholder="Amount">
+                <div id="add-ingredient" class="input-group-addon"><b> + </b></div>
+              </div>
+            </div>
+            <h4>Ingredients</h4>
+            <div id="ingredients-display">
+            </div>
+
+
+
+          <br />
+          <!-- Text Area for Prep -->
+          <label for="prep-instructions">Preparation Instructions:</label><br />
+          <textarea id="prep-instructions" class="form-control" rows="5" cols="80" name="preparation"></textarea>
+          <br />
+          <!-- Meal type selection -->
+          <label>Select Meal Type:</label><br />
+          <div id="meal-type-selection">
+            <label for="select-meal-type">Select Type:</label>
+            <input type="radio" name="meal-type" value="select" id="select-meal-type"/>
+            <label for="breakfast">Breakfast</label>
+            <input type="radio" name="meal-type" value="breakfast" id="breakfast"/>
+            <label for="lunch">Lunch</label>
+            <input type="radio" name="meal-type" value="lunch" id="lunch"/>
+            <label for="dinner">Dinner</label>
+            <input type="radio" name="meal-type" value="dinner" id="dinner"/>
+            <label for="snack">Snack</label>
+            <input type="radio" name="meal-type" value="snack" id="snack"/>
+            <label for="dessert">Dessert</label>
+            <input type="radio" name="meal-type" value="dessert" id="dessert"/>
+          </div>
+          <br />
+          <input type="submit" class="btn-primary" value="Submit Recipe!"/>
+        </form>
       </div>
-      <label for="ingredient">Add Ingredient</label>
-      <input type="text" id="ingredient" name="ingredient"/><input type="button" value="Add" id="add-ingredient"/>
-      <br />
-      <label for="prep-instructions">Preparation Instructions:</label><br />
-      <textarea id="prep-instructions" name="preparation"></textarea>
-      <br />
-      <input type="submit" value="Submit Recipe!"/>
-    </form>
+    </div>
+
     <script>
       let ingredients = [];
       $('#add-ingredient').on('click', function() {
-          ingredients.push($('input[name=ingredient]').val());
-          $('#ingredients-display').append($('input[name=ingredient]').val() + ', ');
+        add_ingredient_to_list();
       });
+
+      function add_ingredient_to_list() {
+          if(ingredients.indexOf($('input[name=ingredient]').val()) < 0) {
+              ingredients.push($('input[name=ingredient]').val());
+              $('#ingredients-display').append('<span>' + $('input[name=ingredient]').val() + '</span>');
+          } else {
+              console.log('already in list!');
+          }
+      }
+      $('#meal-type-selection label').on('click', function() {
+          let selection = $(this).attr('for');
+          let top_color, bottom_color = '#000';
+          switch(selection) {
+            case 'breakfast':
+                top_color = '#FF9912';
+                bottom_color = '#EE7600';
+                break;
+            case 'lunch':
+                top_color = '#66CD00';
+                bottom_color = '#458B00';
+                break;
+            case 'dinner':
+                top_color = '#FF3D0D';
+                bottom_color = '#CD3700';
+                break;
+            case 'snack':
+                top_color = '#0BB5FF';
+                bottom_color = '#007FFF';
+                break;
+            case 'dessert':
+                top_color = '#7D26CD';
+                bottom_color = '#68228B';
+                break;
+            case 'select-meal-type':
+               top_color = '#666';
+               break;
+            default:
+               top_color = '#7D26CD';
+               break;
+          }
+          $(this).css({
+              'background' : 'linear-gradient(' + top_color + ', ' + bottom_color + ')',
+              'color' : '#FFF'
+          }).siblings().css({
+              'background' : '#DCDCDC',
+              'color' : '#666'
+          });
+      });
+      // submit logic
       $('#recipe-form').on('submit', function(e) {
           e.preventDefault();
-          /* Form Vals */
-          console.log(`
-            recipe name: ` + $('input[name=recipe-name]').val() + `
-            ingredients: ` + ingredients + `
-            preparation: ` + $('#prep-instructions').val() + `
-          `);
+          // send form data
           $.ajax({
               url : 'http://localhost:3000/create_recipe',
               type: 'GET',
